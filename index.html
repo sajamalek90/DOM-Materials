@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript DOM Complete Guide</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>JavaScript DOM Complete Guide</h1>
+        <nav>
+            <ul>
+                <li><a href="#dom-intro">DOM Intro</a></li>
+                <li><a href="#select-elements">Select Elements</a></li>
+                <li><a href="#content-attributes">Content & Attributes</a></li>
+                <li><a href="#create-append">Create & Append</a></li>
+                <li><a href="#children">Childrens</a></li>
+                <li><a href="#events">Events</a></li>
+                <li><a href="#classlist">ClassList</a></li>
+                <li><a href="#styling">Styling</a></li>
+                <li><a href="#traversing">Traversing</a></li>
+                <li><a href="#challenge">Challenge</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="dom-intro">
+            <h2>1. What is DOM and Select Elements?</h2>
+
+            <article>
+                <h3>What is the DOM?</h3>
+                <p>The Document Object Model (DOM) is a programming interface for HTML and XML documents. It represents the page structure as a tree of objects that can be manipulated with JavaScript.</p>
+                
+                <div class="diagram">
+                    <p><strong>DOM Tree Structure:</strong></p>
+                    <pre><img src="https://camo.githubusercontent.com/8ba2054d5f2e9d3d5bcdd907561b998b47620524c11324afdc54329fa527c744/68747470733a2f2f637572726963756c756d2d636f6e74656e742e73332e616d617a6f6e6177732e636f6d2f666577706a732f666577706a732d7468652d646f6d2d747265652f496d6167655f365f446f6d547265652e706e67" alt="DOM Tree Structure"></pre>
+                </div>
+
+                <p>The DOM allows JavaScript to access and change all elements, attributes, and styles of an HTML document.</p>
+
+                <h3>Selecting Elements</h3>
+                <p>JavaScript provides several methods to select HTML elements:</p>
+                
+                <pre><code>// Select by ID (returns single element)
+let header = document.getElementById("header");
+console.log(header);
+
+// Select by Class Name (returns HTMLCollection)
+let items = document.getElementsByClassName("item");
+console.log(items[0]); // First item
+
+// Select by Tag Name (returns HTMLCollection)
+let paragraphs = document.getElementsByTagName("p");
+console.log(paragraphs);
+
+// Query Selector (returns first match)
+let firstItem = document.querySelector(".item");
+let heading = document.querySelector("#header h1");
+
+// Query Selector All (returns NodeList)
+let allItems = document.querySelectorAll(".item");
+allItems.forEach(item => console.log(item));
+
+// Select from specific element
+let container = document.querySelector(".container");
+let innerPara = container.querySelector("p");</code></pre>
+
+                <div class="note">
+                    <strong>Note:</strong> querySelector and querySelectorAll are more flexible as they accept any CSS selector, while getElementById, getElementsByClassName, and getElementsByTagName are faster for simple selections.
+                </div>
+            </article>
+        </section>
+
+        <section id="content-attributes">
+            <h2>2. Get, Set Elements Content and Attributes</h2>
+
+            <article>
+                <h3>Working with Element Content</h3>
+                <p>JavaScript provides multiple properties to get and set element content:</p>
+
+                <pre><code>let div = document.querySelector("div");
+
+// innerHTML - gets/sets HTML content
+console.log(div.innerHTML); // Gets HTML inside div
+div.innerHTML = "&lt;p&gt;New content&lt;/p&gt;"; // Sets new HTML
+
+// textContent - gets/sets text only (no HTML)
+console.log(div.textContent); // Gets text content
+div.textContent = "Plain text"; // Sets text (HTML tags will be escaped)
+
+// innerText - gets/sets visible text only
+console.log(div.innerText); // Similar to textContent but respects styling
+
+// Example comparison
+div.innerHTML = "&lt;span&gt;Hello &lt;strong&gt;World&lt;/strong&gt;&lt;/span&gt;";
+console.log(div.innerHTML); // "&lt;span&gt;Hello &lt;strong&gt;World&lt;/strong&gt;&lt;/span&gt;"
+console.log(div.textContent); // "Hello World"</code></pre>
+
+                <h3>Working with Attributes</h3>
+                <p>Attributes can be accessed and modified using various methods:</p>
+
+                <pre><code>let img = document.querySelector("img");
+let link = document.querySelector("a");
+
+// getAttribute - gets attribute value
+console.log(img.getAttribute("src"));
+console.log(link.getAttribute("href"));
+
+// setAttribute - sets attribute value
+img.setAttribute("src", "newimage.jpg");
+img.setAttribute("alt", "New Image");
+link.setAttribute("href", "https://example.com");
+link.setAttribute("target", "_blank");
+
+// Direct property access (for standard attributes)
+console.log(img.src); // Gets src
+img.src = "image.jpg"; // Sets src
+link.href = "https://google.com";
+
+// Data attributes (HTML5)
+let element = document.querySelector(".box");
+element.setAttribute("data-user", "Saja");
+console.log(element.getAttribute("data-user")); // "Saja"
+console.log(element.dataset.user); // "Saja" (ES6 way)</code></pre>
+
+                <div class="note">
+                    <strong>Tip:</strong> Use getAttribute/setAttribute for custom attributes, and direct property access for standard HTML attributes like src, href, id, etc.
+                </div>
+            </article>
+        </section>
+
+        <section id="check-attributes">
+            <h2>3. Check Attributes and Examples</h2>
+
+            <article>
+                <h3>Checking Attributes</h3>
+                <p>JavaScript provides methods to check if attributes exist and remove them:</p>
+
+                <pre><code>let element = document.querySelector(".box");
+
+// hasAttribute - checks if attribute exists
+if (element.hasAttribute("data-user")) {
+    console.log("Has data-user attribute");
+}
+
+// hasAttributes - checks if element has any attributes
+if (element.hasAttributes()) {
+    console.log("Element has attributes");
+}
+
+// removeAttribute - removes an attribute
+element.removeAttribute("data-user");
+
+// attributes - gets all attributes
+console.log(element.attributes);
+console.log(element.attributes.length);
+console.log(element.attributes[0].name); // First attribute name
+console.log(element.attributes[0].value); // First attribute value</code></pre>
+
+                <h3>Practical Examples</h3>
+                <pre><code>// Example 1: Toggle image source
+let img = document.querySelector("img");
+if (img.getAttribute("src") === "image1.jpg") {
+    img.setAttribute("src", "image2.jpg");
+} else {
+    img.setAttribute("src", "image1.jpg");
+}
+
+// Example 2: Check and add attributes
+let link = document.querySelector("a");
+if (!link.hasAttribute("target")) {
+    link.setAttribute("target", "_blank");
+    link.setAttribute("rel", "noopener");
+}
+
+// Example 3: Working with data attributes
+let product = document.querySelector(".product");
+product.dataset.price = "99.99";
+product.dataset.category = "electronics";
+console.log(product.dataset); // DOMStringMap with all data attributes</code></pre>
+            </article>
+        </section>
+
+        <section id="create-append">
+            <h2>4. Create and Append Elements</h2>
+
+            <article>
+                <h3>Creating New Elements</h3>
+                <p>JavaScript allows you to create new HTML elements dynamically:</p>
+
+                <pre><code>// createElement - creates a new element
+let div = document.createElement("div");
+let paragraph = document.createElement("p");
+let heading = document.createElement("h2");
+
+// createTextNode - creates a text node
+let textNode = document.createTextNode("Hello World");
+
+// createComment - creates a comment
+let comment = document.createComment("This is a comment");
+
+// Setting content and attributes
+div.className = "container";
+div.id = "main-container";
+paragraph.textContent = "This is a paragraph";
+heading.innerHTML = "Page Title";</code></pre>
+
+                <h3>Appending Elements</h3>
+                <p>Once created, elements need to be added to the DOM:</p>
+
+                <pre><code>let container = document.querySelector(".container");
+
+// appendChild - adds element as last child
+let newDiv = document.createElement("div");
+newDiv.textContent = "New Div";
+container.appendChild(newDiv);
+
+// append - can add multiple elements and text (ES6)
+let p1 = document.createElement("p");
+let p2 = document.createElement("p");
+container.append(p1, p2, "Some text");
+
+// Example: Creating a complete element
+let article = document.createElement("article");
+article.className = "post";
+
+let title = document.createElement("h3");
+title.textContent = "Article Title";
+
+let content = document.createElement("p");
+content.textContent = "Article content goes here";
+
+article.appendChild(title);
+article.appendChild(content);
+
+document.querySelector("main").appendChild(article);</code></pre>
+            </article>
+        </section>
+
+        <section id="product-practice">
+            <h2>5. Product with Title and Description Practice</h2>
+
+            <article>
+                <h3>Building a Product Card</h3>
+                <p>Let's create a complete product card with title, description, price, and image:</p>
+
+                <pre><code>// Create product container
+let productCard = document.createElement("div");
+productCard.className = "product-card";
+
+// Create and add image
+let productImage = document.createElement("img");
+productImage.src = "product.jpg";
+productImage.alt = "Product Image";
+productCard.appendChild(productImage);
+
+// Create and add title
+let productTitle = document.createElement("h3");
+productTitle.className = "product-title";
+productTitle.textContent = "Wireless Headphones";
+productCard.appendChild(productTitle);
+
+// Create and add description
+let productDesc = document.createElement("p");
+productDesc.className = "product-description";
+productDesc.textContent = "High-quality wireless headphones with noise cancellation";
+productCard.appendChild(productDesc);
+
+// Create and add price
+let productPrice = document.createElement("span");
+productPrice.className = "product-price";
+productPrice.textContent = "$99.99";
+productCard.appendChild(productPrice);
+
+// Create and add button
+let buyButton = document.createElement("button");
+buyButton.className = "btn-buy";
+buyButton.textContent = "Add to Cart";
+productCard.appendChild(buyButton);
+
+// Add product card to page
+document.querySelector(".products-container").appendChild(productCard);</code></pre>
+
+                <h3>Advanced: Creating Multiple Products from Data</h3>
+                <pre><code>let products = [
+    { title: "Laptop", description: "Powerful laptop", price: 999, image: "laptop.jpg" },
+    { title: "Phone", description: "Smartphone", price: 699, image: "phone.jpg" },
+    { title: "Tablet", description: "10-inch tablet", price: 399, image: "tablet.jpg" }
+];
+
+let container = document.querySelector(".products-container");
+
+products.forEach(product => {
+    let card = document.createElement("div");
+    card.className = "product-card";
+    
+    card.innerHTML = `
+        &lt;img src="${product.image}" alt="${product.title}"&gt;
+        &lt;h3&gt;${product.title}&lt;/h3&gt;
+        &lt;p&gt;${product.description}&lt;/p&gt;
+        &lt;span class="price"&gt;$${product.price}&lt;/span&gt;
+        &lt;button&gt;Add to Cart&lt;/button&gt;
+    `;
+    
+    container.appendChild(card);
+});</code></pre>
+            </article>
+        </section>
+
+        <section id="children">
+            <h2>6. Deal with Childrens</h2>
+
+            <article>
+                <h3>Accessing Child Elements</h3>
+                <p>JavaScript provides several properties to work with child elements:</p>
+
+                <pre><code>let parent = document.querySelector(".parent");
+
+// children - gets all child elements (HTMLCollection)
+console.log(parent.children); // All child elements
+console.log(parent.children[0]); // First child element
+console.log(parent.children.length); // Number of children
+
+// childNodes - gets all child nodes including text nodes
+console.log(parent.childNodes); // All nodes (elements, text, comments)
+
+// firstChild vs firstElementChild
+console.log(parent.firstChild); // First node (might be text)
+console.log(parent.firstElementChild); // First element
+
+// lastChild vs lastElementChild
+console.log(parent.lastChild); // Last node
+console.log(parent.lastElementChild); // Last element
+
+// childElementCount - number of child elements
+console.log(parent.childElementCount);</code></pre>
+
+                <h3>Manipulating Children</h3>
+                <pre><code>let container = document.querySelector(".container");
+
+// Remove specific child
+let firstChild = container.firstElementChild;
+container.removeChild(firstChild);
+
+// Replace child
+let oldElement = container.children[1];
+let newElement = document.createElement("div");
+newElement.textContent = "New Content";
+container.replaceChild(newElement, oldElement);
+
+// Clone child
+let elementToClone = container.children[0];
+let clone = elementToClone.cloneNode(true); // true = deep clone
+container.appendChild(clone);
+
+// Loop through children
+for (let i = 0; i < container.children.length; i++) {
+    console.log(container.children[i]);
+}
+
+// Modern way with for...of
+for (let child of container.children) {
+    child.style.color = "blue";
+}</code></pre>
+            </article>
+        </section>
+
+        <section id="events">
+            <h2>7. DOM Events</h2>
+
+            <article>
+                <h3>Event Handling</h3>
+                <p>Events are actions that happen in the browser that JavaScript can respond to:</p>
+
+                <pre><code>let button = document.querySelector("button");
+
+// Method 1: HTML attribute (not recommended)
+// &lt;button onclick="alert('Clicked')"&gt;Click Me&lt;/button&gt;
+
+// Method 2: DOM property
+button.onclick = function() {
+    console.log("Button clicked");
+};
+
+// Method 3: addEventListener (recommended)
+button.addEventListener("click", function() {
+    console.log("Button clicked with addEventListener");
+});
+
+// Common events
+let input = document.querySelector("input");
+
+input.addEventListener("focus", function() {
+    console.log("Input focused");
+});
+
+input.addEventListener("blur", function() {
+    console.log("Input lost focus");
+});
+
+input.addEventListener("input", function() {
+    console.log("Input value:", this.value);
+});
+
+input.addEventListener("change", function() {
+    console.log("Input changed:", this.value);
+});</code></pre>
+
+                <h3>Event Object</h3>
+                <pre><code>button.addEventListener("click", function(e) {
+    console.log(e); // Event object
+    console.log(e.type); // "click"
+    console.log(e.target); // Element that triggered event
+    console.log(e.currentTarget); // Element that handles event
+    console.log(e.clientX, e.clientY); // Mouse coordinates
+});
+
+// Keyboard events
+document.addEventListener("keydown", function(e) {
+    console.log(e.key); // Key pressed
+    console.log(e.code); // Physical key code
+    console.log(e.keyCode); // Deprecated but still used
+});
+
+// Mouse events
+let box = document.querySelector(".box");
+
+box.addEventListener("mouseenter", function() {
+    console.log("Mouse entered");
+});
+
+box.addEventListener("mouseleave", function() {
+    console.log("Mouse left");
+});
+
+box.addEventListener("mousemove", function(e) {
+    console.log("Mouse position:", e.offsetX, e.offsetY);
+});</code></pre>
+            </article>
+        </section>
+
+        <section id="validate-form">
+            <h2>8. Validate Form and Prevent Default</h2>
+
+            <article>
+                <h3>Form Validation</h3>
+                <p>Form validation ensures user input meets requirements before submission:</p>
+
+                <pre><code>let form = document.querySelector("form");
+let username = document.querySelector("#username");
+let email = document.querySelector("#email");
+let password = document.querySelector("#password");
+
+form.addEventListener("submit", function(e) {
+    e.preventDefault(); // Prevent form submission
+    
+    let errors = [];
+    
+    // Username validation
+    if (username.value === "" || username.value.length < 3) {
+        errors.push("Username must be at least 3 characters");
+    }
+    
+    // Email validation
+    let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email.value)) {
+        errors.push("Please enter a valid email");
+    }
+    
+    // Password validation
+    if (password.value.length < 8) {
+        errors.push("Password must be at least 8 characters");
+    }
+    
+    // Display errors or submit
+    if (errors.length > 0) {
+        alert(errors.join("\n"));
+    } else {
+        console.log("Form is valid!");
+        // form.submit(); // Actually submit the form
+    }
+});</code></pre>
+
+                <h3>Prevent Default Behavior</h3>
+                <pre><code>// Prevent link navigation
+let link = document.querySelector("a");
+link.addEventListener("click", function(e) {
+    e.preventDefault();
+    console.log("Link click prevented");
+});
+
+// Prevent context menu
+document.addEventListener("contextmenu", function(e) {
+    e.preventDefault();
+    console.log("Right-click disabled");
+});
+
+// Stop event propagation
+let parent = document.querySelector(".parent");
+let child = document.querySelector(".child");
+
+child.addEventListener("click", function(e) {
+    e.stopPropagation(); // Stops event from bubbling up
+    console.log("Child clicked");
+});
+
+parent.addEventListener("click", function() {
+    console.log("Parent clicked"); // Won't fire if child is clicked
+});</code></pre>
+            </article>
+        </section>
+
+        <section id="event-simulation">
+            <h2>9. Event Simulation Click, Focus, Blur</h2>
+
+            <article>
+                <h3>Simulating Events</h3>
+                <p>JavaScript can programmatically trigger events on elements:</p>
+
+                <pre><code>let button = document.querySelector("button");
+let input = document.querySelector("input");
+
+// Simulate click
+button.click(); // Triggers click event
+
+// Simulate focus
+input.focus(); // Focuses the input field
+
+// Simulate blur
+input.blur(); // Removes focus from input
+
+// Example: Auto-focus input on page load
+window.addEventListener("load", function() {
+    document.querySelector("#search").focus();
+});
+
+// Example: Programmatic form submission
+let form = document.querySelector("form");
+setTimeout(function() {
+    form.submit(); // Submits form after 3 seconds
+}, 3000);
+
+// Example: Simulate click after delay
+let submitBtn = document.querySelector("#submit");
+setTimeout(function() {
+    submitBtn.click();
+}, 2000);</code></pre>
+
+                <h3>Custom Events</h3>
+                <pre><code>// Create custom event
+let myEvent = new Event("customEvent");
+
+// Dispatch custom event
+let element = document.querySelector(".box");
+element.dispatchEvent(myEvent);
+
+// Listen for custom event
+element.addEventListener("customEvent", function() {
+    console.log("Custom event triggered!");
+});
+
+// Custom event with data
+let dataEvent = new CustomEvent("userLogin", {
+    detail: { username: "Saja", timestamp: Date.now() }
+});
+
+document.addEventListener("userLogin", function(e) {
+    console.log("User logged in:", e.detail.username);
+});</code></pre>
+            </article>
+        </section>
+
+        <section id="classlist">
+            <h2>10. ClassList Object and Methods</h2>
+
+            <article>
+                <h3>Working with Classes</h3>
+                <p>The classList property provides methods to manipulate element classes:</p>
+
+                <pre><code>let element = document.querySelector(".box");
+
+// classList properties and methods
+console.log(element.classList); // DOMTokenList
+console.log(element.classList.length); // Number of classes
+console.log(element.classList.value); // All classes as string
+
+// add - adds one or more classes
+element.classList.add("active");
+element.classList.add("highlight", "bordered");
+
+// remove - removes one or more classes
+element.classList.remove("active");
+element.classList.remove("highlight", "bordered");
+
+// toggle - toggles a class on/off
+element.classList.toggle("active"); // Adds if not present, removes if present
+
+// contains - checks if class exists
+if (element.classList.contains("active")) {
+    console.log("Element is active");
+}
+
+// replace - replaces old class with new class
+element.classList.replace("old-class", "new-class");
+
+// item - gets class by index
+console.log(element.classList.item(0)); // First class
+
+// forEach - iterate through classes
+element.classList.forEach(className => {
+    console.log(className);
+});</code></pre>
+
+                <h3>Practical Examples</h3>
+                <pre><code>// Toggle dark mode
+let toggleBtn = document.querySelector("#toggle-theme");
+toggleBtn.addEventListener("click", function() {
+    document.body.classList.toggle("dark-mode");
+});
+
+// Active navigation
+let navLinks = document.querySelectorAll(".nav-link");
+navLinks.forEach(link => {
+    link.addEventListener("click", function() {
+        // Remove active from all
+        navLinks.forEach(l => l.classList.remove("active"));
+        // Add active to clicked
+        this.classList.add("active");
+    });
+});
+
+// Show/hide content
+let showBtn = document.querySelector("#show");
+let content = document.querySelector(".content");
+showBtn.addEventListener("click", function() {
+    content.classList.toggle("hidden");
+    this.textContent = content.classList.contains("hidden") ? "Show" : "Hide";
+});</code></pre>
+            </article>
+        </section>
+
+        <section id="styling">
+            <h2>11. CSS Styling and Stylesheets</h2>
+
+            <article>
+                <h3>Inline Styling</h3>
+                <p>JavaScript can modify element styles directly:</p>
+
+                <pre><code>let element = document.querySelector(".box");
+
+// style property - sets inline CSS
+element.style.color = "red";
+element.style.backgroundColor = "blue";
+element.style.fontSize = "20px";
+element.style.padding = "10px";
+element.style.border = "2px solid black";
+
+// Multi-word CSS properties use camelCase
+element.style.marginTop = "20px";
+element.style.borderRadius = "5px";
+
+// cssText - set multiple styles at once
+element.style.cssText = "color: white; background: black; padding: 15px;";
+
+// removeProperty - remove a style
+element.style.removeProperty("color");
+
+// getComputedStyle - get actual computed styles
+let computedStyles = window.getComputedStyle(element);
+console.log(computedStyles.color);
+console.log(computedStyles.backgroundColor);
+console.log(computedStyles.width);</code></pre>
+
+                <h3>Working with Stylesheets</h3>
+                <pre><code>// Access stylesheets
+console.log(document.styleSheets); // All stylesheets
+console.log(document.styleSheets[0]); // First stylesheet
+
+// Get CSS rules
+let stylesheet = document.styleSheets[0];
+console.log(stylesheet.cssRules); // All CSS rules
+
+// Add CSS rule
+stylesheet.insertRule(".new-class { color: green; }", 0);
+
+// Delete CSS rule
+stylesheet.deleteRule(0);
+
+// Example: Dynamic theme switching
+function setTheme(theme) {
+    if (theme === "dark") {
+        document.documentElement.style.setProperty("--bg-color", "#222");
+        document.documentElement.style.setProperty("--text-color", "#fff");
+    } else {
+        document.documentElement.style.setProperty("--bg-color", "#fff");
+        document.documentElement.style.setProperty("--text-color", "#222");
+    }
+}</code></pre>
+            </article>
+        </section>
+
+        <section id="before-after">
+            <h2>12. Before, After, Prepend, Append, and Remove</h2>
+
+            <article>
+                <h3>Modern DOM Manipulation Methods</h3>
+                <p>ES6 introduced new methods for inserting and removing elements:</p>
+
+                <pre><code>let container = document.querySelector(".container");
+let reference = document.querySelector(".reference");
+
+// append - adds content at the end
+let newDiv = document.createElement("div");
+newDiv.textContent = "Appended";
+container.append(newDiv);
+container.append("Text", newDiv, "More text"); // Multiple items
+
+// prepend - adds content at the beginning
+let firstDiv = document.createElement("div");
+firstDiv.textContent = "Prepended";
+container.prepend(firstDiv);
+
+// before - inserts before the element
+let beforeDiv = document.createElement("div");
+beforeDiv.textContent = "Before Reference";
+reference.before(beforeDiv);
+
+// after - inserts after the element
+let afterDiv = document.createElement("div");
+afterDiv.textContent = "After Reference";
+reference.after(afterDiv);
+
+// remove - removes the element
+reference.remove(); // Removes the element from DOM
+
+// replaceWith - replaces the element
+let replacement = document.createElement("div");
+replacement.textContent = "Replacement";
+reference.replaceWith(replacement);</code></pre>
+
+                <h3>Comparison with Old Methods</h3>
+                <pre><code>// Old way vs New way
+
+// appendChild vs append
+container.appendChild(newDiv); // Old (only elements)
+container.append(newDiv); // New (elements + text)
+
+// insertBefore vs before
+container.insertBefore(newDiv, reference); // Old
+reference.before(newDiv); // New
+
+// removeChild vs remove
+container.removeChild(reference); // Old
+reference.remove(); // New
+
+// replaceChild vs replaceWith
+container.replaceChild(newDiv, reference); // Old
+reference.replaceWith(newDiv); // New
+
+// Example: Building a list
+let ul = document.querySelector("ul");
+
+// Prepend header
+ul.prepend(document.createElement("li")).textContent = "Header Item";
+
+// Append items
+["Item 1", "Item 2", "Item 3"].forEach(text => {
+    let li = document.createElement("li");
+    li.textContent = text;
+    ul.append(li);
+});</code></pre>
+            </article>
+        </section>
+
+        <section id="traversing">
+            <h2>13. DOM Traversing</h2>
+
+            <article>
+                <h3>Navigating the DOM Tree</h3>
+                <p>DOM traversing means moving between elements in the document tree:</p>
+
+                <pre><code>let element = document.querySelector(".current");
+
+// Parent traversing
+console.log(element.parentElement); // Direct parent element
+console.log(element.parentNode); // Parent node
+console.log(element.closest(".container")); // Nearest ancestor with class
+
+// Children traversing
+console.log(element.children); // All child elements
+console.log(element.firstElementChild); // First child
+console.log(element.lastElementChild); // Last child
+
+// Sibling traversing
+console.log(element.nextElementSibling); // Next sibling element
+console.log(element.previousElementSibling); // Previous sibling element
+
+// All siblings
+let siblings = Array.from(element.parentElement.children)
+    .filter(child => child !== element);
+console.log(siblings);</code></pre>
+
+                <h3>Advanced Traversing Examples</h3>
+                <pre><code>// Find all parents up to specific element
+function getParents(element, selector) {
+    let parents = [];
+    let parent = element.parentElement;
+    
+    while (parent) {
+        if (selector) {
+            if (parent.matches(selector)) {
+                parents.push(parent);
+            }
+        } else {
+            parents.push(parent);
+        }
+        parent = parent.parentElement;
+    }
+    
+    return parents;
+}
+
+// Example: Highlight all ancestors
+let target = document.querySelector(".target");
+getParents(target).forEach(parent => {
+    parent.style.border = "2px solid red";
+});
+
+// Get all descendants
+function getAllDescendants(element) {
+    let descendants = [];
+    
+    for (let child of element.children) {
+        descendants.push(child);
+        descendants.push(...getAllDescendants(child));
+    }
+    
+    return descendants;
+}
+
+// Example: Find next sibling with specific class
+function getNextSibling(element, selector) {
+    let sibling = element.nextElementSibling;
+    
+    while (sibling) {
+        if (sibling.matches(selector)) {
+            return sibling;
+        }
+        sibling = sibling.nextElementSibling;
+    }
+    
+    return null;
+}
+
+let nextActive = getNextSibling(element, ".active");</code></pre>
+            </article>
+        </section>
+
+        <section id="cloning">
+            <h2>14. DOM Cloning</h2>
+
+            <article>
+                <h3>Cloning Elements</h3>
+                <p>The cloneNode() method creates a copy of an element:</p>
+
+                <pre><code>let original = document.querySelector(".original");
+
+// Shallow clone (element only, no children)
+let shallowClone = original.cloneNode(false);
+console.log(shallowClone.children.length); // 0
+
+// Deep clone (element with all children)
+let deepClone = original.cloneNode(true);
+console.log(deepClone.children.length); // Same as original
+
+// Append clone to document
+document.querySelector(".container").appendChild(deepClone);</code></pre>
+
+                <h3>Practical Cloning Examples</h3>
+                <pre><code>// Example 1: Clone a card
+let card = document.querySelector(".card");
+let cardClone = card.cloneNode(true);
+
+// Modify clone
+cardClone.querySelector("h3").textContent = "New Card";
+cardClone.querySelector("p").textContent = "Cloned content";
+
+document.querySelector(".cards-container").appendChild(cardClone);
+
+// Example 2: Clone list items
+let listItem = document.querySelector("li");
+let numberOfClones = 5;
+
+for (let i = 0; i < numberOfClones; i++) {
+    let clone = listItem.cloneNode(true);
+    clone.textContent = `Item ${i + 1}`;
+    listItem.parentElement.appendChild(clone);
+}
+
+// Example 3: Clone template
+let template = document.querySelector("#product-template");
+let products = [
+    { name: "Product 1", price: 99 },
+    { name: "Product 2", price: 149 }
+];
+
+products.forEach(product => {
+    let clone = template.cloneNode(true);
+    clone.querySelector(".product-name").textContent = product.name;
+    clone.querySelector(".product-price").textContent = `${product.price}`;
+    document.querySelector(".products").appendChild(clone);
+});
+
+// Important: Event listeners are NOT cloned
+let button = document.querySelector("button");
+button.addEventListener("click", () => console.log("Clicked"));
+
+let buttonClone = button.cloneNode(true);
+// buttonClone won't have the click event - need to add it again
+buttonClone.addEventListener("click", () => console.log("Clone clicked"));</code></pre>
+
+                <div class="note">
+                    <strong>Important:</strong> When cloning elements, event listeners attached via addEventListener are NOT copied. You need to re-attach them to the cloned element. However, inline event handlers (like onclick="...") will be copied.
+                </div>
+            </article>
+        </section>
+
+        <section id="addeventlistener">
+            <h2>15. AddEventListener</h2>
+
+            <article>
+                <h3>Understanding addEventListener</h3>
+                <p>addEventListener is the modern way to attach event handlers to elements:</p>
+
+                <pre><code>let button = document.querySelector("button");
+
+// Basic syntax
+button.addEventListener("click", function() {
+    console.log("Button clicked");
+});
+
+// Arrow function syntax
+button.addEventListener("click", () => {
+    console.log("Clicked with arrow function");
+});
+
+// Named function
+function handleClick() {
+    console.log("Named function called");
+}
+button.addEventListener("click", handleClick);
+
+// Multiple listeners on same event
+button.addEventListener("click", () => console.log("First listener"));
+button.addEventListener("click", () => console.log("Second listener"));
+// Both will execute</code></pre>
+
+                <h3>Event Listener Options</h3>
+                <pre><code>let element = document.querySelector(".box");
+
+// Options object
+element.addEventListener("click", handleClick, {
+    capture: false,  // Event phase (false = bubbling, true = capturing)
+    once: true,      // Remove listener after first execution
+    passive: true    // Never call preventDefault()
+});
+
+// once option example
+button.addEventListener("click", function() {
+    console.log("This will only fire once");
+}, { once: true });
+
+// capture option (event phases)
+document.querySelector(".parent").addEventListener("click", () => {
+    console.log("Parent - Capturing phase");
+}, true); // Capturing phase
+
+document.querySelector(".child").addEventListener("click", () => {
+    console.log("Child clicked");
+});
+
+document.querySelector(".parent").addEventListener("click", () => {
+    console.log("Parent - Bubbling phase");
+}); // Bubbling phase (default)</code></pre>
+
+                <h3>Removing Event Listeners</h3>
+                <pre><code>// To remove, must use named function
+function myHandler() {
+    console.log("Handling event");
+}
+
+button.addEventListener("click", myHandler);
+button.removeEventListener("click", myHandler); // Removes the listener
+
+// Cannot remove anonymous functions
+button.addEventListener("click", function() {
+    console.log("Can't remove this");
+});
+// No way to remove the above listener
+
+// Practical example: One-time setup
+let setupButton = document.querySelector("#setup");
+
+function runSetup() {
+    console.log("Setup completed");
+    // Remove listener after first use
+    setupButton.removeEventListener("click", runSetup);
+}
+
+setupButton.addEventListener("click", runSetup);</code></pre>
+
+                <h3>Event Delegation</h3>
+                <pre><code>// Instead of adding listeners to many elements
+// Add one listener to parent and use event.target
+
+let list = document.querySelector("ul");
+
+// Bad approach: listener on each item
+document.querySelectorAll("li").forEach(item => {
+    item.addEventListener("click", function() {
+        console.log(this.textContent);
+    });
+});
+
+// Good approach: event delegation
+list.addEventListener("click", function(e) {
+    if (e.target.tagName === "LI") {
+        console.log(e.target.textContent);
+    }
+});
+
+// Works for dynamically added items too!
+let newItem = document.createElement("li");
+newItem.textContent = "New Item";
+list.appendChild(newItem); // Will have click handler automatically
+
+// Advanced delegation example
+document.querySelector(".products").addEventListener("click", function(e) {
+    // Handle buy button clicks
+    if (e.target.classList.contains("btn-buy")) {
+        let product = e.target.closest(".product");
+        console.log("Buying:", product.dataset.id);
+    }
+    
+    // Handle delete button clicks
+    if (e.target.classList.contains("btn-delete")) {
+        e.target.closest(".product").remove();
+    }
+});</code></pre>
+            </article>
+        </section>
+
+        <section id="challenge">
+            <h2>16. DOM Challenge</h2>
+
+            <article class="challenge">
+                <h3>DOM Manipulation Challenge</h3>
+                <p>Complete the following tasks to demonstrate your DOM skills:</p>
+
+                <pre><code style="color: black;">// Given HTML structure:
+// &lt;div class="container"&gt;
+//   &lt;h2 id="title"&gt;Welcome&lt;/h2&gt;
+//   &lt;ul class="items"&gt;
+//     &lt;li class="item"&gt;Item 1&lt;/li&gt;
+//     &lt;li class="item"&gt;Item 2&lt;/li&gt;
+//     &lt;li class="item"&gt;Item 3&lt;/li&gt;
+//   &lt;/ul&gt;
+//   &lt;button id="addBtn"&gt;Add Item&lt;/button&gt;
+// &lt;/div&gt;
+
+// Task 1: Change title text to "DOM Master"
+// Your code here
+
+// Task 2: Add class "active" to first item
+// Your code here
+
+// Task 3: Create new list item with text "Item 4" and append to list
+// Your code here
+
+// Task 4: Remove the second item
+// Your code here
+
+// Task 5: Add click event to button that creates new items
+// Your code here
+
+// Task 6: Add click event to each item that toggles "completed" class
+// Use event delegation
+// Your code here
+
+// Task 7: Create a card with image, title, and description
+// Append it before the ul element
+// Your code here</code></pre>
+
+                <h3>Challenge Solution</h3>
+                <pre><code>// Task 1: Change title text to "DOM Master"
+document.getElementById("title").textContent = "DOM Master";
+// or
+document.querySelector("#title").innerHTML = "DOM Master";
+
+// Task 2: Add class "active" to first item
+document.querySelector(".item").classList.add("active");
+// or
+document.querySelector(".items").firstElementChild.classList.add("active");
+
+// Task 3: Create new list item and append
+let newItem = document.createElement("li");
+newItem.className = "item";
+newItem.textContent = "Item 4";
+document.querySelector(".items").appendChild(newItem);
+
+// Task 4: Remove the second item
+let items = document.querySelectorAll(".item");
+items[1].remove();
+// or
+document.querySelector(".items").children[1].remove();
+
+// Task 5: Add click event to button
+let itemCount = 4;
+document.getElementById("addBtn").addEventListener("click", function() {
+    itemCount++;
+    let li = document.createElement("li");
+    li.className = "item";
+    li.textContent = `Item ${itemCount}`;
+    document.querySelector(".items").appendChild(li);
+});
+
+// Task 6: Event delegation for item clicks
+document.querySelector(".items").addEventListener("click", function(e) {
+    if (e.target.classList.contains("item")) {
+        e.target.classList.toggle("completed");
+    }
+});
+
+// Task 7: Create and insert card
+let card = document.createElement("div");
+card.className = "card";
+
+let img = document.createElement("img");
+img.src = "image.jpg";
+img.alt = "Card Image";
+
+let cardTitle = document.createElement("h3");
+cardTitle.textContent = "Card Title";
+
+let cardDesc = document.createElement("p");
+cardDesc.textContent = "This is a card description";
+
+card.appendChild(img);
+card.appendChild(cardTitle);
+card.appendChild(cardDesc);
+
+let ul = document.querySelector(".items");
+ul.before(card);
+// or
+// document.querySelector(".container").insertBefore(card, ul);</code></pre>
+
+                <h3>Bonus Challenge: Todo List Application</h3>
+                <pre><code>// Create a complete todo list with add, delete, and toggle features
+
+let todoInput = document.querySelector("#todoInput");
+let addButton = document.querySelector("#addTodo");
+let todoList = document.querySelector("#todoList");
+
+// Add new todo
+addButton.addEventListener("click", function() {
+    if (todoInput.value.trim() !== "") {
+        let li = document.createElement("li");
+        li.className = "todo-item";
+        
+        let span = document.createElement("span");
+        span.textContent = todoInput.value;
+        
+        let deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Delete";
+        deleteBtn.className = "delete-btn";
+        
+        li.appendChild(span);
+        li.appendChild(deleteBtn);
+        todoList.appendChild(li);
+        
+        todoInput.value = ""; // Clear input
+    }
+});
+
+// Event delegation for todo list
+todoList.addEventListener("click", function(e) {
+    // Toggle completed
+    if (e.target.tagName === "SPAN") {
+        e.target.parentElement.classList.toggle("completed");
+    }
+    
+    // Delete todo
+    if (e.target.classList.contains("delete-btn")) {
+        e.target.parentElement.remove();
+    }
+});
+
+// Allow Enter key to add todo
+todoInput.addEventListener("keypress", function(e) {
+    if (e.key === "Enter") {
+        addButton.click();
+    }
+});</code></pre>
+
+                <div class="note">
+                    <strong>Practice Tips:</strong>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>Always use querySelector/querySelectorAll for flexibility</li>
+                        <li>Prefer addEventListener over inline event handlers</li>
+                        <li>Use event delegation for dynamic content</li>
+                        <li>Remember to validate user input</li>
+                        <li>Use classList methods instead of className manipulation</li>
+                        <li>Cache DOM queries in variables for better performance</li>
+                    </ul>
+                </div>
+            </article>
+        </section>
+
+        <section id="additional-resources">
+            <h2>Additional DOM Concepts</h2>
+
+            <article>
+                <h3>Performance Tips</h3>
+                <pre><code>// Bad: Multiple DOM queries
+for (let i = 0; i < 100; i++) {
+    document.querySelector(".container").appendChild(element);
+}
+
+// Good: Cache the query
+let container = document.querySelector(".container");
+for (let i = 0; i < 100; i++) {
+    container.appendChild(element);
+}
+
+// Best: Use DocumentFragment for multiple inserts
+let fragment = document.createDocumentFragment();
+for (let i = 0; i < 100; i++) {
+    let div = document.createElement("div");
+    div.textContent = `Item ${i}`;
+    fragment.appendChild(div);
+}
+container.appendChild(fragment); // Single DOM update</code></pre>
+
+                <h3>Common DOM Patterns</h3>
+                <pre><code>// Pattern 1: Toggle visibility
+function toggleElement(selector) {
+    let element = document.querySelector(selector);
+    element.style.display = element.style.display === "none" ? "block" : "none";
+}
+
+// Pattern 2: Disable button during processing
+async function submitForm(e) {
+    e.preventDefault();
+    let button = e.target.querySelector("button");
+    button.disabled = true;
+    button.textContent = "Loading...";
+    
+    await processForm();
+    
+    button.disabled = false;
+    button.textContent = "Submit";
+}
+
+// Pattern 3: Debounce input events
+function debounce(func, delay) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), delay);
+    };
+}
+
+let searchInput = document.querySelector("#search");
+searchInput.addEventListener("input", debounce(function() {
+    console.log("Searching:", this.value);
+}, 300));</code></pre>
+            </article>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 JavaScript DOM Materials. All rights reserved.</p>
+        <p>Powered by: <a href="https://www.linkedin.com/in/saja-malek/" target="_blank">Saja Malek</a></p>
+    </footer>
+</body>
+</html>
